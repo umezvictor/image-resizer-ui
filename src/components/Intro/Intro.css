@@ -1,0 +1,12 @@
+.intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tag-line {
+  font-size: 1.2rem;
+}
