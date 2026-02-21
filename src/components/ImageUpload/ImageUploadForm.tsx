@@ -68,7 +68,7 @@ function ImageUploadForm() {
         console.log("Connection successful");
         connectionRef.current = connection;
 
-        connection.on("resized-image", (downloadUrl) => {
+        connection.on("compressed-images", (downloadUrl) => {
           console.log("New image:", downloadUrl);
         });
       } catch (error) {
