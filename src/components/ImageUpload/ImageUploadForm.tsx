@@ -42,6 +42,7 @@ function ImageUploadForm() {
         formData.append("file", data.file[0]);
       }
       setIsProcessing(true);
+      setIsImageCompresionOK(false);
       const response = await axios.post(
         "https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/upload",
         formData,
