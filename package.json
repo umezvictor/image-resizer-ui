@@ -13,6 +13,8 @@
     "@hookform/resolvers": "^5.2.2",
     "@microsoft/signalr": "^10.0.0",
     "axios": "^1.13.2",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",

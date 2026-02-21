@@ -26,6 +26,7 @@ function ImageUploadForm() {
 
   const connectionRef = useRef<HubConnection | null>(null);
   const [blobName, setBlobName] = useState("");
+  const [isImageCompresionOK, setIsImageCompresionOK] = useState(false);
 
   const submitHandler = async (data: CompressFileRequest) => {
     try {
@@ -101,8 +102,11 @@ function ImageUploadForm() {
           const myUrl = new URL(downloadUrl);
           const parts = myUrl.pathname.split("/");
           const filename = parts[parts.length - 1];
-          setBlobName(filename);
-          console.log("filename:", filename);
+          if (filename) {
+            setBlobName(filename);
+            setIsImageCompresionOK(true);
+            console.log("filename:", filename);
+          }
         });
       } catch (error) {
         console.error("SignalR connection failed:", error);
@@ -131,12 +135,16 @@ function ImageUploadForm() {
           </form>
           <div className="download">
             <button
-              className="download-btn"
+              className={
+                isImageCompresionOK
+                  ? "download-btn-active"
+                  : "download-btn-inactive"
+              }
               type="button"
               onClick={handleDownload}
-              disabled={!blobName}
+              disabled={!isImageCompresionOK}
             >
-              Download
+              Download Compressed Image
             </button>
           </div>
         </div>
