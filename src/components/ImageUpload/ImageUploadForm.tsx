@@ -48,22 +48,15 @@ function ImageUploadForm() {
   };
 
   const SIGNALR_NEGOTIATE_URL =
-    "https://imageresizer-h8cjegbuafcvh6c0.westeurope-01.azurewebsites.net/ap/negotiate";
+    "https://imageresizer-h8cjegbuafcvh6c0.westeurope-01.azurewebsites.net/api/negotiate";
 
-  //SignalR connection and event handlers
   useEffect(() => {
     const initConnection = async () => {
       try {
         // 1. Call negotiate endpoint
         const res = await fetch(SIGNALR_NEGOTIATE_URL, { method: "POST" });
-        console.log("res");
-        console.log(res);
         const info = await res.json();
-        console.log("info");
-        console.log(info);
-        // info.url and info.accessToken are provided by the function
 
-        // 2. Create SignalR connection using negotiated details
         const connection = new HubConnectionBuilder()
           .withUrl(info.url, {
             accessTokenFactory: () => info.accessToken,
@@ -71,15 +64,12 @@ function ImageUploadForm() {
           .withAutomaticReconnect([0, 2000, 5000, 10000, 15000])
           .build();
 
-        // 3. Start the connection
         await connection.start();
         console.log("Connection successful");
         connectionRef.current = connection;
 
-        // 4. (Optional) Set up a handler for your SignalR events
         connection.on("resized-image", (downloadUrl) => {
           console.log("New image:", downloadUrl);
-          // Handle the new image URL (e.g., update state or display UI)
         });
       } catch (error) {
         console.error("SignalR connection failed:", error);
