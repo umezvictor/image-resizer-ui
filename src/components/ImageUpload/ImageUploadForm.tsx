@@ -27,6 +27,13 @@ function ImageUploadForm() {
   const connectionRef = useRef<HubConnection | null>(null);
   const [blobName, setBlobName] = useState("");
   const [isImageCompresionOK, setIsImageCompresionOK] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (isImageCompresionOK) {
+      setIsProcessing(false);
+    }
+  }, [isImageCompresionOK]);
 
   const submitHandler = async (data: CompressFileRequest) => {
     try {
@@ -34,6 +41,7 @@ function ImageUploadForm() {
       if (data.file?.length) {
         formData.append("file", data.file[0]);
       }
+      setIsProcessing(true);
       const response = await axios.post(
         "https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/upload",
         formData,
@@ -44,7 +52,10 @@ function ImageUploadForm() {
         },
       );
       console.log("Upload success:", response.data);
+      if (response.data.blobUrl) {
+      }
     } catch (error) {
+      setIsProcessing(false);
       console.error("Error uploading file:", error);
     }
   };
@@ -130,7 +141,21 @@ function ImageUploadForm() {
             <div className="form-inputs">
               <input type="file" accept="image/*" {...register("file")} />
               {errors.file && <p>{errors.file.message as string}</p>}
-              <button type="submit">Compress</button>
+              {/* <button type="submit" disabled={isProcessing}>
+                Compress
+              </button> */}
+              <button type="submit" disabled={isProcessing}>
+                {isProcessing ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                ) : (
+                  "Compress"
+                )}
+              </button>
             </div>
           </form>
           <div className="download">
