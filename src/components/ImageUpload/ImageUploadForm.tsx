@@ -48,7 +48,7 @@ function ImageUploadForm() {
   };
 
   const SIGNALR_NEGOTIATE_URL =
-    "https://imageresizer-h8cjegbuafcvh6c0.westeurope-01.azurewebsites.net/negotiate";
+    "https://imageresizer-h8cjegbuafcvh6c0.westeurope-01.azurewebsites.net/api/negotiate";
 
   //SignalR connection and event handlers
   useEffect(() => {
