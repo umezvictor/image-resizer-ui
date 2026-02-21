@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import "./ImageUpload.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 const fileSchema = z.object({
@@ -25,6 +25,7 @@ function ImageUploadForm() {
   });
 
   const connectionRef = useRef<HubConnection | null>(null);
+  const [blobName, setBlobName] = useState("");
 
   const submitHandler = async (data: CompressFileRequest) => {
     try {
@@ -33,7 +34,7 @@ function ImageUploadForm() {
         formData.append("file", data.file[0]);
       }
       const response = await axios.post(
-        "http://20.93.223.109:8080/image/upload",
+        "https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/upload",
         formData,
         {
           headers: {
@@ -44,6 +45,34 @@ function ImageUploadForm() {
       console.log("Upload success:", response.data);
     } catch (error) {
       console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!blobName) {
+      alert("No file available for download yet.");
+      return;
+    }
+    // Construct the download endpoint
+    const url = `https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/download/${blobName}`;
+    try {
+      // Fetch the file as a blob
+      const response = await fetch(url, { method: "GET" });
+      if (!response.ok) throw new Error("Download failed");
+
+      const blob = await response.blob();
+
+      // Create a temporary anchor to initiate the download
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = blobName; // sets the filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl); // Clean up
+    } catch (err) {
+      alert("Download error: " + err);
     }
   };
 
@@ -69,7 +98,11 @@ function ImageUploadForm() {
         connectionRef.current = connection;
 
         connection.on("compressed-images", (downloadUrl) => {
-          console.log("New image:", downloadUrl);
+          const myUrl = new URL(downloadUrl);
+          const parts = myUrl.pathname.split("/");
+          const filename = parts[parts.length - 1];
+          setBlobName(filename);
+          console.log("filename:", filename);
         });
       } catch (error) {
         console.error("SignalR connection failed:", error);
@@ -97,7 +130,14 @@ function ImageUploadForm() {
             </div>
           </form>
           <div className="download">
-            <button className="download-btn">Download</button>
+            <button
+              className="download-btn"
+              type="button"
+              onClick={handleDownload}
+              disabled={!blobName}
+            >
+              Download
+            </button>
           </div>
         </div>
       </div>
