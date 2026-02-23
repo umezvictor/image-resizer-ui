@@ -65,7 +65,7 @@
 
 .download-btn-active {
   padding: 10px 20px;
-  background-color: #11994c;
+  background-color: orange;
   border: none;
   border-radius: 5px;
   cursor: pointer;
