@@ -41,10 +41,11 @@ function ImageUploadForm() {
       if (data.file?.length) {
         formData.append("file", data.file[0]);
       }
+
       setIsProcessing(true);
       setIsImageCompresionOK(false);
       const response = await axios.post(
-        "https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/upload",
+        "https://imageresizerapi-gedjbzfxfwbfg9ex.northeurope-01.azurewebsites.net/Image/upload",
         formData,
         {
           headers: {
@@ -67,7 +68,7 @@ function ImageUploadForm() {
       return;
     }
     // Construct the download endpoint
-    const url = `https://imageresizerapi-gedjbzfxfwbfg9ex.westeurope-01.azurewebsites.net/Image/download/${blobName}`;
+    const url = `https://imageresizerapi-gedjbzfxfwbfg9ex.northeurope-01.azurewebsites.net/Image/download/${blobName}`;
     try {
       // Fetch the file as a blob
       const response = await fetch(url, { method: "GET" });
